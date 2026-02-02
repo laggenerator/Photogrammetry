@@ -465,7 +465,7 @@
         <string>Opcje</string>
        </property>
        <attribute name="title">
-        <string>Strona</string>
+        <string>Opcje</string>
        </attribute>
        <widget class="QGroupBox" name="formGroupBox_2">
         <property name="geometry">
