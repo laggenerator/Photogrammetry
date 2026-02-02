@@ -1,38 +1,49 @@
----
 Options:
-  - max_features: 8192 # do sifta, najszybsze opcje
-    num_nearest_neighbors: 5 # do slownikowego laczenia v
-    num_checks: 150
-    ba_global_max_num_iterations: 20 # do rekonstrukcji
-    level: 1 #dla pmvs2 v
-    threshold: 0.7
-    useVisData: 1 #bo colmap je generuje
-    sequence: 3
-    quad: 2.5
-    maxAngle: 10
-    csize: 3
-    cmvs_images_per_cluster: 50
-  - max_features: 8192 # do sifta, srednie opcje
-    num_nearest_neighbors: 5 # do slownikowego laczenia v
-    num_checks: 200
-    ba_global_max_num_iterations: 50 # do rekonstrukcji
-    level: 1 #dla pmvs2 v
-    threshold: 0.7
-    useVisData: 1 #bo colmap je generuje
-    sequence: 3 #a tak napisali w docsach, domyslnie taka jak mamy sekwencyjnie
-    quad: 2.5
-    maxAngle: 10
-    csize: 2
-    cmvs_images_per_cluster: 20
-  - max_features: 16384 # do sifta, bez gpu nie odpalaj :czacha czacha czacha: https://www.youtube.com/watch?v=_36yNWw_07g
-    num_nearest_neighbors: 10 # do slownikowego laczenia v
-    num_checks: 200
-    ba_global_max_num_iterations: 200 # do rekonstrukcji
-    level: 0 #dla pmvs2 v
-    threshold: 0.7
-    useVisData: 1 #bo colmap je generuje
-    sequence: 3 #a tak napisali w docsach, domyslnie taka jak mamy sekwencyjnie
-    quad: 3 #tutaj i z max angle moze poskutkowac zbyt zaszumionym, ale to trzeba sprawdzic
-    maxAngle: 7
-    csize: 1
-    cmvs_images_per_cluster: 20
+- max_features: 8192
+  num_nearest_neighbors: 5
+  num_checks: 150
+  ba_global_max_num_iterations: 20
+  level: 1
+  threshold: 0.7
+  useVisData: 1
+  sequence: 3
+  quad: 2.5
+  maxAngle: 10
+  csize: 3
+  cmvs_images_per_cluster: 50
+- max_features: 8192
+  num_nearest_neighbors: 5
+  num_checks: 200
+  ba_global_max_num_iterations: 50
+  level: 1
+  threshold: 0.7
+  useVisData: 1
+  sequence: 3
+  quad: 2.5
+  maxAngle: 10
+  csize: 2
+  cmvs_images_per_cluster: 20
+- max_features: 16384
+  num_nearest_neighbors: 10
+  num_checks: 200
+  ba_global_max_num_iterations: 200
+  level: 0
+  threshold: 0.7
+  useVisData: 1
+  sequence: 3
+  quad: 3
+  maxAngle: 7
+  csize: 1
+  cmvs_images_per_cluster: 20
+- max_features: 2133
+  num_nearest_neighbors: 5
+  ba_global_max_num_iterations: 50
+  level: 1
+  threshold: 0.7
+  useVisData: 1
+  sequence: 3
+  quad: 2.5
+  maxAngle: 10
+  csize: 2
+  num_checks: 200
+  cmvs_images_per_cluster: 20

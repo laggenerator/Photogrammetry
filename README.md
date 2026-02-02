@@ -1,18 +1,17 @@
-Potrzeba pmvs2 i cmvs (chociaz jeszcze nie robilem nic tak duzego zeby musiec rozbijac z tym cmvs)
-https://github.com/pmoulon/CMVS-PMVS.git
-skompilowałem tam jak jest z tym CMake build system, potem po prostu pliki wykonywalne 
-przenioslem do ./dependencies chociaz to w sumie my jestesmy ich dependency ¯\_(ツ)_/¯
-
 # Nasz program
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vulputate facilisis tellus, vitae blandit libero lobortis vitae. Vivamus facilisis aliquet fringilla. Donec laoreet nunc eget feugiat faucibus. Cras vitae nisl purus. Suspendisse lobortis lectus volutpat nisl mattis luctus. Suspendisse eu sem dapibus purus feugiat dictum a eget dolor. Sed vel ex quis ipsum dignissim pellentesque quis non ipsum
-
+Program do fotogrametrii w oparciu o zdjęcia lub filmy (z ktorych wyciagane sa zdjęcia) korzystający z colmapa.
+W katalogu głównym znajdują się 3 główne programy:
+- **main2.py** -- skrypt uruchamiajacy interfejs graficzny oparty o form.ui i komunikujacy sie z dwoma pozostalymi
+- **colmap.py** -- skrypt, w którym zrealizowano pipeline korzystajacy z colmapa oraz pmvs/cmvs. Wynikiem jego działania jest rzadka i gęsta rekonstrukcja
+- **meshing.py** -- skrypt, który z danej gęstej chmury punktów tworzy model siatkę.
 
 ## Instalacja
-[repo CMVS/PMVS](https://github.com/pmoulon/CMVS-PMVS.git)
-Nunc placerat ex quis hendrerit imperdiet. Nulla consequat ultricies justo, eget vehicula libero porttitor in. Etiam turpis nisi, elementum ut est vitae, imperdiet efficitur arcu. Cras ultrices iaculis magna et sagittis.
+Wymagane są programy PMVS oraz CMVS (z [tego repozytorium](https://github.com/pmoulon/CMVS-PMVS.git)). Ich pliki wykonywalne powinny znajdować się w katalogu dependencies.
+Wymagane biblioteki wymienione są w pliku requirements.txt.
+W katalogu dependencies znajduje się drzewo słowników, które program może wykorzystać jeśli taka opcja zostanie wybrana.
 
-## Flagi
+## Flagi programu pycolmap.py
 Program przyjmuje flagi:
 - **-o <nazwa>**
         pozwala okreslic nazwe wyjściowej gęstej rekonstrukcji
@@ -24,6 +23,17 @@ Program przyjmuje flagi:
         okresla ilość wykorzystywanych wątków logicznych w programie -- ogolnie to nie powinno chyba byc wieksze niz prawdziwa ich ilosc, mozna zrobic ze -1 uzywa wszystkich dostepnych
 - **-l <0|1|2>**
         pozwala okreslic poziom zlozonosci, 0 to minimalna, szybka i najgorsza, 1 to średnia, 2 to najbardziej wymagająca (moze wyjsc zaszumione, ale to mozna zmienic w opcjach)
+- **-gpu <false|true>**
+	domyslne zachowanie to nieuzywanie GPU, podanie jakiekokolwiek argumentu innego od 0 skutkuje wykorzystaniem GPU
+- **-seq**
+	jesli flaga podana to program uzyje łączenia sekwencyjnego
+
+## Flagi programu meshing.py
+Program przyjmuje flagi:
+- **nazwa wejsciowego pliku .ply**
+  	  zakladamy, ze znajduje sie on w katalogu chmury
+- **metoda tworzenia siatki <0|1|2>**
+  	  0 - metoda ball pivoting, 1 - metoda poissona, 2 - metoda alpha shapes
 
 ## Opcje
 Są w pliku **options.yaml** w katalogu work. Domyslnie są tam trzy, te ktore opisalem wyzej, ale potem moznaby zrobić że użytkowik z GUI może niektóre opcje ustawić sobie i np jako kolejny tam wpis. Informacje o opcjach pmvsa mam [stąd](https://www.di.ens.fr/pmvs/documentation.html).

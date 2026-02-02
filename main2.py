@@ -5,6 +5,7 @@ import os
 import subprocess
 import glob
 import re
+import yaml
 from PySide6.QtWidgets import QApplication, QFileDialog
 from PySide6.QtUiTools import QUiLoader
 from PySide6.QtCore import QFile
@@ -14,6 +15,7 @@ from pathlib import Path
 import logging
 
 sciezka_zdjecia = './work/zdjecia'
+sciezka_ustawienia = './work/options.yaml'
 
 katalog = Path(__file__).resolve().parent
 logi = katalog / Path("work/log")
@@ -155,19 +157,20 @@ class ColmapThread(QThread):
     err = Signal(str)
     log_signal = Signal(str)
 
-    def __init__(self, nazwa_modelu, ile_watkow, opcje_poziom, force, seq):
+    def __init__(self, nazwa_modelu, ile_watkow, opcje_poziom, force, seq, czyGPU):
         super().__init__()
         self.nazwa_modelu = nazwa_modelu
         self.ile_watkow = ile_watkow
         self.opcje_poziom = opcje_poziom
         self.force = force
         self.seq = seq
+        self.czyGPU = czyGPU
 
     def run(self):
         import subprocess
         try:
             cmd_args = ['python3', 'colmap.py', '-o', self.nazwa_modelu, '-nthreads',
-                        str(self.ile_watkow), '-l', str(self.opcje_poziom)]
+                        str(self.ile_watkow), '-l', str(self.opcje_poziom), '-gpu', str(int(self.czyGPU))]
             if (self.force is True):
                 print(f"Colmap działa w trybie wymuszonym")
                 cmd_args.append('-f')
@@ -280,14 +283,18 @@ class MyWindow:
         self.window.rekonstrukcjaAvgFeatureLabel.setHidden(True)
         self.window.rekonstrukcjaPointsCount.setHidden(True)
 
-        # Podłączenie przycisków
+        #podłączenie przycisków
         self.window.wyszukiwanie.clicked.connect(self.przegladaj_film)
         self.window.startEkstrakcji.clicked.connect(self.start_extract)
         self.window.startRekonstrukcji.clicked.connect(self.start_colmap)
         self.window.startMeshowania.clicked.connect(self.start_mesh)
+        self.window.zapiszUstawienia.clicked.connect(self.zapisz_ustawienia)
 
         print("plikow w zdjeciach:", len(os.listdir(sciezka_zdjecia)))
         print("wartosc:", self.window.wyborOpcji.currentData())
+
+        #ograniczenia pól w ustawieniach
+        
 
     def log(self, message):
         self.window.logWindow.append(message)
@@ -516,6 +523,7 @@ class MyWindow:
 
         print("opcje:", opcje)
         print("nazwa:", nazwa_modelu)
+        print("GPU:", self.window.czyGPU.isChecked())
         # Trzeba sprawdzic czy sa zdjecia
         if not os.path.exists(sciezka_zdjecia) or not os.listdir(sciezka_zdjecia):
             QMessageBox.warning(self.window, 'Błąd',
@@ -526,8 +534,7 @@ class MyWindow:
         self.window.startRekonstrukcji.setEnabled(False)
 
         # colmap.py w osobnym wątku
-        self.colmap_thread = ColmapThread(nazwa_modelu, self.window.wybierzLiczbeWatkow.value(
-        ), opcje, self.window.wymusRekonstrukcje.isChecked(), self.window.matchowanieCheckBox.isChecked())
+        self.colmap_thread = ColmapThread(nazwa_modelu, self.window.wybierzLiczbeWatkow.value(), opcje, self.window.wymusRekonstrukcje.isChecked(), self.window.matchowanieCheckBox.isChecked(), self.window.czyGPU.isChecked())
         self.colmap_thread.koniec.connect(self.colmap_sukces)
         self.colmap_thread.err.connect(self.colmap_blad)
         self.colmap_thread.log_signal.connect(self.log)
@@ -571,6 +578,32 @@ class MyWindow:
         self.mesh_thread.log_signal.connect(self.log)
         self.mesh_thread.start()
 
+    def zapisz_ustawienia(self):
+        #ograniczenia ustawień:
+        with open(sciezka_ustawienia, "r") as f:
+            data = yaml.safe_load(f)
+
+        if "Options" not in data or not isinstance(data["Options"], list):
+            raise ValueError("Niepoprawna struktura pliku options.yaml")
+
+        options = data["Options"]
+
+        #jesli by nie bylo jeszcze opcji uzytkownika
+        if len(options) < 4:
+            options.append({})
+
+        #nadpisanie
+        opcje = {"max_features": self.window.maxFeatures.value(), "num_nearest_neighbors": self.window.numNearestNeighbors.value(),
+                 "num_checks": self.window.numChecks.value(), "ba_global_max_num_iterations": self.window.baGlobal.value(),
+                 "level": self.window.level.value(), "threshold": 0.7,
+                 "useVisData": 1, "sequence": self.window.sequence.value(),
+                 "quad": self.window.quad.value(), "maxAngle": self.window.maxAngle.value(), "csize": self.window.csize.value(),
+                 "cmvs_images_per_cluster": 20};
+
+        options[3].update(opcje)
+
+        with open(sciezka_ustawienia, "w") as f:
+            yaml.safe_dump(data, f, sort_keys=False)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
