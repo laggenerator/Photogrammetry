@@ -41,7 +41,7 @@ n_watkow = 8  # Ile wątków
 uzywacGPU = False  # Czy robic z GPU
 zlozonosc = 0
 uzywacSekwencyjnego = False
-testProcesow = False  # Używać procesów colmap (1) czy pycolmap (0)
+testProcesow = True  # Używać procesów colmap (1) czy pycolmap (0)
 
 # konfiguracja pliku do logowania
 logging.basicConfig(
@@ -55,7 +55,7 @@ logging.basicConfig(
 if not opcje.exists():
     raise FileNotFoundError(f"Nie znaleziono pliku opcji YAML: {opcje}")
 
-#configs["Options"][0] to slownik najszybszych ustawien, 1 srednich a 2 takich mocarnyyyych, 3 to wlasne jakies custom
+# configs["Options"][0] to slownik najszybszych ustawien, 1 srednich a 2 takich mocarnyyyych, 3 to wlasne jakies custom
 with open(str(opcje), "r") as f:
     configs = yaml.safe_load(f)
 
@@ -107,10 +107,11 @@ else:
           str((undistort_dir / "pmvs/models")))
 if "-l" in sys.argv:
     gdzie_zlozonosc = sys.argv.index("-l") + 1
-    zlozonosc = int(sys.argv[gdzie_zlozonosc]) if gdzie_zlozonosc < len(sys.argv) else 0
-    if(zlozonosc < 0 or zlozonosc > 3):
-      zlozonosc = 0
-      print(f"Podano nieprawidlowy poziom! Opcje to 0 - najszybsze, 1 - srednie, 2 - dokladne. 3 - niestandardowe. Domyslnie ustawiono 0")
+    zlozonosc = int(sys.argv[gdzie_zlozonosc]
+                    ) if gdzie_zlozonosc < len(sys.argv) else 0
+    if (zlozonosc < 0 or zlozonosc > 3):
+        zlozonosc = 0
+        print(f"Podano nieprawidlowy poziom! Opcje to 0 - najszybsze, 1 - srednie, 2 - dokladne. 3 - niestandardowe. Domyslnie ustawiono 0")
     else:
         print(f"Podano poziom rekonstrukcji {zlozonosc}")
 else:
@@ -122,7 +123,7 @@ if "-nthreads" in sys.argv:
 if "-seq" in sys.argv:
     print(f"Używamy sekwencyjnego matchowania!")
     uzywacSekwencyjnego = True
-if "-gpu" in sys.argv: #nie podane -- CPU, podane z 0 -- CPU, podane z 1 -- GPU
+if "-gpu" in sys.argv:  # nie podane -- CPU, podane z 0 -- CPU, podane z 1 -- GPU
     idx = sys.argv.index("-gpu") + 1
     if idx < len(sys.argv):
         uzywacGPU = bool(int(sys.argv[idx]))
@@ -583,7 +584,7 @@ if uzywacCMVS:
             # Użyj połączonego modelu jako wynik
             stara_nazwa = "combined.ply"
         else:
-            stara_nazwa = "option_0000.ply"
+            stara_nazwa = "option-0000.ply"
     else:
         stara_nazwa = option_file + ".ply"
 else:
