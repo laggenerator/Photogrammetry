@@ -1,10 +1,11 @@
 # Nasz program
 
 Program do fotogrametrii w oparciu o zdjęcia lub filmy (z ktorych wyciagane sa zdjęcia) korzystający z colmapa.
-W katalogu głównym znajdują się 3 główne programy:
-- **main2.py** -- skrypt uruchamiajacy interfejs graficzny oparty o form.ui i komunikujacy sie z dwoma pozostalymi
+W katalogu głównym znajdują się 4 główne programy:
+- **main.py** -- skrypt uruchamiajacy interfejs graficzny oparty o form.ui i komunikujacy sie z dwoma pozostalymi
 - **colmap.py** -- skrypt, w którym zrealizowano pipeline korzystajacy z colmapa oraz pmvs/cmvs. Wynikiem jego działania jest rzadka i gęsta rekonstrukcja
-- **meshing.py** -- skrypt, który z danej gęstej chmury punktów tworzy model siatkę.
+- **meshing.py** -- skrypt, który z danej gęstej chmury punktów tworzy model siatkę
+- **odwroc_model.py** -- skrypt, który pozwala odbić model względem osi Z.
 
 ## Instalacja
 Wymagane są programy PMVS oraz CMVS (z [tego repozytorium](https://github.com/pmoulon/CMVS-PMVS.git)). Ich pliki wykonywalne powinny znajdować się w katalogu dependencies.
